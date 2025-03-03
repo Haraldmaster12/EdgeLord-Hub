@@ -1,0 +1,199 @@
+local player = game.Players.LocalPlayer
+local character = player.Character or player.CharacterAdded:Wait()
+
+local function makeSeeThrough(part)
+    if part and part:IsA("BasePart") then
+        part.Transparency = 0.5
+        part.Material = Enum.Material.ForceField
+    end
+end
+
+local function createESP(part, color, nameTag, nameColor, isBigText, offsetY)
+    if part and part:IsA("BasePart") then
+        local highlight = Instance.new("BoxHandleAdornment")
+        highlight.Adornee = part
+        highlight.Size = part.Size + Vector3.new(0.1, 0.1, 0.1)
+        highlight.Color3 = color
+        highlight.AlwaysOnTop = true
+        highlight.ZIndex = 10
+        highlight.Parent = game.CoreGui
+    end
+
+    if nameTag then
+        local billboard = Instance.new("BillboardGui")
+        billboard.Adornee = part
+        billboard.Size = UDim2.new(10, 0, isBigText and 4 or 2, 0)
+        billboard.StudsOffset = Vector3.new(0, offsetY or 5, 0)
+        billboard.AlwaysOnTop = true
+        billboard.Parent = part
+
+        local label = Instance.new("TextLabel")
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.BackgroundTransparency = 1
+        label.Text = nameTag
+        label.TextColor3 = nameColor or color
+        label.TextScaled = true
+        label.Font = Enum.Font.GothamBold
+        label.Parent = billboard
+    end
+end
+
+-- See-Through Walls
+local seeThroughWalls = {
+    -- Previously added walls
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[13],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[14],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[34],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[66],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[29],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[30],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[67],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[98],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[102],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[59],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[63],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[64],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[31],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[7],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[27],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[28],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[9],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[5],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[10],
+    workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[11],
+    workspace._MAZE.InnerMaze.GladeWalls.EntranceWalls:GetChildren()[5],
+    workspace._MAZE.InnerMaze.GladeWalls.EntranceWalls:GetChildren()[3],
+    workspace._MAZE.InnerMaze.GladeWalls.EntranceWalls:GetChildren()[2],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[204],
+    workspace._MAZE.InnerMaze.GladeWalls.EntranceWalls:GetChildren()[7],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[205],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[336],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[338],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[337],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[334],
+    workspace._MAZE.InnerMaze.GladeWalls.EntranceWalls.InnerWall,
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[329],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[94],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[93],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[92],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[91],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[301],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[182],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[302],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[292],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[293],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[294],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[295],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[174],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[420],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[303],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[416],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[289],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[409],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[410],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[412],
+    workspace.AntiNoclip.OuterWalls:GetChildren()[23],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[514],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[513],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[332],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[451],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[330],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[335],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[452],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[450],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[449],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[457],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[453],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[454],
+
+    -- Newly added walls
+    workspace._MAZE.InnerMaze.GladeWalls:GetChildren()[7]:GetChildren()[5],
+    workspace._MAZE.InnerMaze.GladeWalls:GetChildren()[7].InnerWall,
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[271],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[68],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[67],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[65],
+    workspace._MAZE.InnerMaze.GladeWalls:GetChildren()[2]:GetChildren()[3],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[66],
+    workspace._MAZE.InnerMaze.GladeWalls:GetChildren()[2]:GetChildren()[7],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[4],
+    workspace._MAZE.InnerMaze.InnerWalls.InnerWall,
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[35],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[38],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[114],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[115],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[116],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[113],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[226],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[366],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[368],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[232],
+    workspace._MAZE.OuterMaze.Walls.Model:GetChildren()[14],
+    workspace._MAZE.InnerMaze.InnerWalls:GetChildren()[371]
+}
+
+for _, wall in pairs(seeThroughWalls) do
+    makeSeeThrough(wall)
+end
+
+-- Outer Maze Area - Big Red Name
+local outerMaze = workspace.AntiNoclip:GetChildren()[19]
+createESP(outerMaze, Color3.fromRGB(255, 0, 0), "Outer Maze Area")
+
+-- Moving Wall - If Exists, Mark as "Closed to Outer Edge" in Large Deep Orange Text
+local deepOrange = Color3.fromRGB(255, 140, 0)
+local movingWall = workspace._MAZE.MovingWalls:GetChildren()[2]:FindFirstChild("Main")
+if movingWall then
+    createESP(movingWall, Color3.fromRGB(255, 120, 120), "Closed to Outer Edge", deepOrange, true)
+end
+
+-- Exit Name ESP (Big Blue)
+local exitWall1 = workspace._MAZE.OuterMaze.Walls:GetChildren()[8]:GetChildren()[20]
+local exitWall2 = workspace._MAZE.OuterMaze.Walls:GetChildren()[8]:GetChildren()[21]
+
+if exitWall1 and exitWall2 then
+    local middlePosition = (exitWall1.Position + exitWall2.Position) / 2
+    local fakePart = Instance.new("Part")
+    fakePart.Size = Vector3.new(1, 1, 1)
+    fakePart.Position = middlePosition
+    fakePart.Anchored = true
+    fakePart.CanCollide = false
+    fakePart.Transparency = 1
+    fakePart.Parent = workspace
+
+    createESP(fakePart, Color3.fromRGB(0, 0, 255), "EXIT", Color3.fromRGB(0, 0, 255), true)
+end
+
+-- ESP Between Two Walls (Big Yellow Lowered)
+local yellowESPWall1 = workspace._MAZE.OuterMaze.Walls.Model:GetChildren()[14]
+local yellowESPWall2 = workspace._MAZE.OuterMaze.Walls.Model:GetChildren()[15]
+
+if yellowESPWall1 and yellowESPWall2 then
+    local middlePosition = (yellowESPWall1.Position + yellowESPWall2.Position) / 2
+    local fakePart = Instance.new("Part")
+    fakePart.Size = Vector3.new(1, 1, 1)
+    fakePart.Position = middlePosition
+    fakePart.Anchored = true
+    fakePart.CanCollide = false
+    fakePart.Transparency = 1
+    fakePart.Parent = workspace
+
+    createESP(fakePart, Color3.fromRGB(255, 255, 0), "OUTER EDGE", Color3.fromRGB(255, 255, 0), true, -3)
+end
+
+-- ESP Between Two Walls (Big Blue Lowered)
+local blueESPWall1 = workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[4]
+local blueESPWall2 = workspace._MAZE.OuterMaze.Walls.OuterWalls:GetChildren()[2]
+
+if blueESPWall1 and blueESPWall2 then
+    local middlePosition = (blueESPWall1.Position + blueESPWall2.Position) / 2
+    local fakePart = Instance.new("Part")
+    fakePart.Size = Vector3.new(1, 1, 1)
+    fakePart.Position = middlePosition
+    fakePart.Anchored = true
+    fakePart.CanCollide = false
+    fakePart.Transparency = 1
+    fakePart.Parent = workspace
+
+    createESP(fakePart, Color3.fromRGB(0, 0, 255), "BIG EXIT", Color3.fromRGB(0, 0, 255), true, -3)
+end
